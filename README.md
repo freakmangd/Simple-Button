@@ -39,6 +39,7 @@ A typical button looks like this:
 button = ButtonManager.new("Hello World!", 100, 100, 100,50)
 ```
 
+### Main Menu
 A full main menu might look like this:
 
 ```lua
@@ -78,6 +79,7 @@ function love.mousereleased( x, y, msbutton, istouch, presses )
 end
 ```
 
+### Defaults
 After this I saw some room for improvement, so I added defaults.
 With defaults you can set a default anything for a button, even functions.
 In the simplebutton.lua script, you can see what keywords you need to use for the defaults at the top.
@@ -100,7 +102,8 @@ This changes the love.load() to this:
    end
 ```
 
-With the toggle parameter you can make things like this:
+### Toggling Buttons
+An example of a button using a toggle
 
 ```lua
 require('simplebutton')
@@ -131,6 +134,7 @@ function love.mousereleased( x, y, msbutton, istouch, presses )
 end
 ```
 
+### Moving Buttons
 Buttons also have an optional update call, this can be used for animation or this:
 
 ```lua
