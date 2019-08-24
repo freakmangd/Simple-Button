@@ -1,4 +1,45 @@
-# Simple-Button
+# Simple Button
+
+A small button library for love2D
+
+## Functions:
+
+```lua 
+-- Create a new button
+ButtonManager.new(label, x, y, width, height, toggle, color, pressedColor, toggledColor) 
+
+-- Label of new button
+string label ("Button")
+-- X of the new button
+number x (0)
+-- Y of the new button
+number y (0)
+-- Width of the new button
+number width (50)
+-- Height of the new button
+number height (50)
+-- If the button toggles when pressed
+boolean toggle (false)
+-- Color of the button
+Table color ({1,1,1,1})
+-- Color of the button when pressed
+Table pressedColor ({0.8,0.8,0.8,1})
+-- Color of the button when toggled
+Table toggledColor ({0.9,0.9,0.9,1})
+```
+
+More functions can be found in the simplebutton.lua script
+
+## Examples
+
+A typical button looks like this:
+
+```lua
+--                         Label, x, y, width, height
+button = ButtonManager.new("Hello World!", 100, 100, 100,50)
+```
+
+A full main menu might look like this:
 
 ```lua
 require('simplebutton')
@@ -59,9 +100,7 @@ This changes the love.load() to this:
    end
 ```
 
-The ButtonManager.new function actually looks like this:
-```lua ButtonManager.new(label, x, y, width, height, toggle, color, pressedColor, toggledColor)```
-And with the toggle parameter you can make things like this:
+With the toggle parameter you can make things like this:
 
 ```lua
 require('simplebutton')
