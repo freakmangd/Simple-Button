@@ -155,6 +155,14 @@ Buttons also have an optional update call, this can be used for animation or thi
    end
 ```
 
+In order for this to work, you need to put this in love.update(dt)
+
+```lua
+function love.update(dt)
+   ButtonManager.update(dt)
+end
+```
+
 MIT License
 
 Copyright (c) 2019 Elijah Freeman
