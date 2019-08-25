@@ -43,7 +43,7 @@ button = ButtonManager.new("Hello World!", 100, 100, 100,50)
 A full main menu might look like this:
 
 ```lua
-require('simplebutton')
+ButtonManager = require('simplebutton')
 
 -- used for easy alignments
 screen = { w = love.graphics.getWidth(), h = love.graphics.getHeight() }
@@ -106,7 +106,7 @@ This changes the love.load() to this:
 An example of a button using a toggle
 
 ```lua
-require('simplebutton')
+ButtonManager = require('simplebutton')
 
 screen = { w = love.graphics.getWidth(), h = love.graphics.getHeight() }
 
