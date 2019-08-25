@@ -1,6 +1,6 @@
 --Simple Buttons v1.0
 
-ButtonManager = {}
+local ButtonManager = {}
 ButtonManager.Buttons = {}
 
 ButtonManager.default = 
@@ -237,3 +237,5 @@ function ButtonManager.customFloor(num, b)
 		return num
 	end
 end
+
+return ButtonManager
