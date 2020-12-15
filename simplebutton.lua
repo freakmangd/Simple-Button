@@ -3,6 +3,10 @@
 local ButtonManager = {}
 ButtonManager.Buttons = {}
 
+local Button = {}
+
+local lg = love.graphics
+
 ButtonManager.default = 
 { 
 	label = 'Button',
@@ -16,7 +20,7 @@ ButtonManager.default =
 	color = {1,1,1,1},
 	pressedColor = {0.8,0.8,0.8,1},
 	toggledColor = {0.9,0.9,0.9,1},
-	font = love.graphics.getFont(),
+	font = lg.getFont(),
 	alignment = 'left',
 	padding = {0,0},
 	fontScale = 1,
@@ -29,12 +33,12 @@ ButtonManager.default =
 
 function ButtonManager.new(label, x, y, width, height, toggle, color, pressedColor, toggledColor)
 	
-	local newButton = {}
+	local newButton = setmetatable({}, { __index = Button })
 	
 	newButton.label = label or "Button"
-	newButton.font = font or ButtonManager.default.font
+	newButton.font = ButtonManager.default.font
 	if type(newButton.font) == 'string' then
-		newButton.font = love.graphics.newFont(newButton.font)
+		newButton.font = lg.newFont(newButton.font)
 	end
 	if newButton.font == nil then
 		newButton.font = ButtonManager.defaultFont
@@ -68,75 +72,10 @@ function ButtonManager.new(label, x, y, width, height, toggle, color, pressedCol
 	newButton.onClick = ButtonManager.default.onClick
 	newButton.onToggleOff = ButtonManager.default.onToggleOff
 	newButton.onRelease = ButtonManager.default.onRelease
-	
-	function newButton.setLabel(text, align)
-	
-		newButton.label = text
-		newButton.text = love.graphics.newText(newButton.font, text)
+
+	newButton:setLabel(newButton.label)
+	newButton:setAlignment(ButtonManager.default.alignment)
 		
-		if align ~= nil then
-			newButton.setAlignment(align)
-		end
-	
-		newButton.rightX = newButton.x + newButton.width - newButton.text:getWidth()*(1/newButton.fontScale)
-		newButton.centerX = newButton.x + (newButton.width/2) - (newButton.text:getWidth()/2*(1/newButton.fontScale))
-		newButton.leftX = newButton.x
-		newButton.upY = newButton.y
-		newButton.centerY = newButton.y + (newButton.height/2) - (newButton.text:getHeight()/2*(1/newButton.fontScale))
-		newButton.downY = newButton.y + newButton.height - newButton.text:getHeight()*(1/newButton.fontScale)
-		
-	end
-	
-	newButton.setLabel(newButton.label)
-	
-	function newButton.setAlignment(align)
-	
-		newButton.setLabel(newButton.label)
-		
-		if align == 'center' then
-			newButton.textx = newButton.centerX
-			newButton.texty = newButton.centerY
-		elseif align == 'right' then
-			newButton.textx = newButton.rightX
-			newButton.texty = newButton.centerY
-		elseif align == 'left' then
-			newButton.textx = newButton.leftX
-			newButton.texty = newButton.centerY
-		elseif align == 'up' then
-			newButton.textx = newButton.centerX
-			newButton.texty = newButton.upY
-		elseif align == 'down' then
-			newButton.textx = newButton.centerX
-			newButton.texty = newButton.downY
-		elseif align ~= 'none' then
-			print('The string ' .. align .. ' is not an acceptable alignment type. newButton.setLabel(' .. align .. ')')
-		end
-	end
-	
-	newButton.setAlignment(ButtonManager.default.alignment)
-	
-	function newButton.setFont(font)
-		if type(font) == 'string' then
-			newButton.font = love.graphics.newFont(font)
-			newButton.text = love.graphics.newText(newButton.font, newButton.label)
-		elseif type(font) == 'Font' then
-			newButton.font = font
-		else
-			print("FONT NOT OF TYPE FONT, simplebutton.lua newButton.setFont(font) (line 42)")
-		end
-	end
-	
-	function newButton.setImage(image)
-		if type(image) == 'string' then
-			newButton.img = love.graphics.newImage(image)
-		else
-			newButton.img = image
-		end
-		local imgWidth = newButton.img:getWidth()
-		local imgHeight = newButton.img:getHeight()
-		newButton.scale = {newButton.width / imgWidth, newButton.height / imgHeight}
-	end
-	
 	table.insert(ButtonManager.Buttons, newButton)
 	
 	return newButton
@@ -202,30 +141,32 @@ function ButtonManager.mousereleased(x, y, button)
 
 end
 
-function ButtonManager.draw()
-
-	for k,v in ipairs(ButtonManager.Buttons) do
-		if v.enabled then
+function ButtonManager.draw(b)
+	if b then
+		if b.enabled then
 	
-		if not v.interactable then
-			v.currentColor = v.disabledColor
+		if not b.interactable then
+			b.currentColor = b.disabledColor
 		end
 	
-		love.graphics.setColor(v.currentColor[1], v.currentColor[2], v.currentColor[3], v.currentColor[4] or 1)
+		lg.setColor(b.currentColor[1], b.currentColor[2], b.currentColor[3], b.currentColor[4] or 1)
 
-		if v.img ~= nil then			
-			love.graphics.draw(v.img, v.x, v.y, 0, v.scale[1], v.scale[2])
+		if b.img ~= nil then			
+			lg.draw(b.img, b.x, b.y, 0, b.scale[1], b.scale[2])
 		else
-			love.graphics.rectangle(v.fillType, v.x, v.y, v.width, v.height)
+			lg.rectangle(b.fillType, b.x, b.y, b.width, b.height)
 		end
 		
-		love.graphics.setColor(0,0,0)
+		lg.setColor(0,0,0)
 		
-		love.graphics.draw(v.text, ButtonManager.customFloor(v.textx + v.padding[1], v.roundPos), ButtonManager.customFloor(v.texty + v.padding[2], v.roundPos), 0, v.fontScale)
+		lg.draw(b.text, ButtonManager.customFloor(b.textx + b.padding[1], b.roundPos), ButtonManager.customFloor(b.texty + b.padding[2], b.roundPos), 0, b.fontScale)
 		
+		end
+	else
+		for _,v in ipairs(ButtonManager.Buttons) do
+			ButtonManager.draw(v)
 		end
 	end
-
 end
 
 function ButtonManager.customFloor(num, b)
@@ -236,6 +177,71 @@ function ButtonManager.customFloor(num, b)
 	else 
 		return num
 	end
+end
+
+function Button:setLabel(text, align)
+	
+	self.label = text
+	self.text = lg.newText(self.font, text)
+	
+	if align ~= nil then
+		self.setAlignment(align)
+	end
+
+	local tw, th = self.text:getWidth(), self.text:getHeight()
+
+	self.rightX = self.x + self.width - self.text:getWidth()*(1/self.fontScale)
+	self.centerX = self.x + (self.width/2) - (self.text:getWidth()/2*(1/self.fontScale))
+	self.leftX = self.x
+	self.upY = self.y
+	self.centerY = self.y + (self.height/2) - (self.text:getHeight()/2*(1/self.fontScale))
+	self.downY = self.y + self.height - self.text:getHeight()*(1/self.fontScale)
+	
+end
+
+function Button:setAlignment(align)
+
+	self.setLabel(self.label)
+	
+	if align == 'center' then
+		self.textx = self.centerX
+		self.texty = self.centerY
+	elseif align == 'right' then
+		self.textx = self.rightX
+		self.texty = self.centerY
+	elseif align == 'left' then
+		self.textx = self.leftX
+		self.texty = self.centerY
+	elseif align == 'up' then
+		self.textx = self.centerX
+		self.texty = self.upY
+	elseif align == 'down' then
+		self.textx = self.centerX
+		self.texty = self.downY
+	elseif align ~= 'none' then
+		print('The string ' .. align .. ' is not an acceptable alignment type. self.setLabel(' .. align .. ')')
+	end
+end
+
+function Button:setFont(font)
+	assert(type(font) == 'string' or type(font) == 'Font', 'Argument "Font" in Button:setFont must be of type string or Font')
+	if type(font) == 'string' then
+		self.font = lg.newFont(font)
+		self.text = lg.newText(self.font, self.label)
+	elseif type(font) == 'Font' then
+		self.font = font
+	end
+end
+
+function Button:setImage(image)
+	if type(image) == 'string' then
+		self.img = lg.newImage(image)
+	else
+		self.img = image
+	end
+	local imgWidth = self.img:getWidth()
+	local imgHeight = self.img:getHeight()
+	self.scale = {self.width / imgWidth, self.height / imgHeight}
 end
 
 return ButtonManager
