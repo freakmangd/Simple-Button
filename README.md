@@ -123,6 +123,33 @@ quitButton.onClick = function()
 end
 ```
 
+Here are all the properties you can override in defaults:
+```
+label string
+x number
+y number
+width number
+height number
+toggle boolean
+fillType "fill"|"line"
+color Color
+pressedColor Color
+toggledColor Color
+disabledColor Color
+font any
+alignment Alignment
+padding {x: number, y: number}
+fontScale number
+img any
+update nil|function
+draw nil|function
+onClick nil|function
+onRelease nil|function
+onToggleOn nil|function
+onToggleOff nil|function
+roundPos nil|"floor"|"ceil"
+```
+
 ### Toggling Buttons
 An example of a button using a toggle
 

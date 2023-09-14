@@ -5,6 +5,16 @@ ButtonManager.Buttons = {}
 
 local lg = love.graphics
 
+local function customFloor(num, roundPos)
+    if roundPos == 'floor' then
+        return math.ceil(num)
+    elseif roundPos == 'ciel' then
+        return math.ceil(num)
+    else
+        return num
+    end
+end
+
 ---@class Button
 ---@field enabled boolean
 ---@field interactable boolean
@@ -28,6 +38,28 @@ local lg = love.graphics
 local Button = {
     update = function()
     end,
+    draw = function(self)
+        if not self.interactable then
+            self.currentColor = self.disabledColor
+        end
+
+        local r, g, b, a = lg.getColor()
+
+        lg.setColor(self.currentColor)
+
+        if self.img ~= nil then
+            lg.draw(self.img, self.x, self.y, 0, self.scale[1], self.scale[2])
+        else
+            lg.rectangle(self.fillType, self.x, self.y, self.width, self.height)
+        end
+
+        lg.setColor(self.textColor);
+
+        lg.draw(self.text, customFloor(self.x + self.textx + self.padding[1], self.roundPos),
+            customFloor(self.y + self.texty + self.padding[2], self.roundPos), 0, self.fontScale)
+
+        lg.setColor(r, g, b, a)
+    end,
     onClick = function()
     end,
     onToggleOn = function()
@@ -41,16 +73,6 @@ Button.__index = Button
 
 ---@alias Alignment "left"|"right"|"center"|"up"|"down"
 ---@alias Color { r: number, g: number, b: number, a: number? }
-
-local function customFloor(num, roundPos)
-    if roundPos == 'floor' then
-        return math.ceil(num)
-    elseif roundPos == 'ciel' then
-        return math.ceil(num)
-    else
-        return num
-    end
-end
 
 ---@class ButtonManagerDefault
 ---@field label string
@@ -69,7 +91,12 @@ end
 ---@field padding {x: number, y: number}
 ---@field fontScale number
 ---@field img any
----@field draw function 
+---@field update nil|function
+---@field draw nil|function
+---@field onClick nil|function
+---@field onRelease nil|function
+---@field onToggleOn nil|function
+---@field onToggleOff nil|function
 ---@field roundPos nil|"floor"|"ceil"
 ButtonManager.default = {
     label = 'Button',
@@ -89,28 +116,6 @@ ButtonManager.default = {
     padding = { 0, 0 },
     fontScale = 1,
     img = nil,
-    draw = function(self)
-        if not self.interactable then
-            self.currentColor = self.disabledColor
-        end
-
-        local r,g,b,a = lg.getColor()
-
-        lg.setColor(self.currentColor)
-
-        if self.img ~= nil then
-            lg.draw(self.img, self.x, self.y, 0, self.scale[1], self.scale[2])
-        else
-            lg.rectangle(self.fillType, self.x, self.y, self.width, self.height)
-        end
-
-        lg.setColor(self.textColor);
-
-        lg.draw(self.text, customFloor(self.x + self.textx + self.padding[1], self.roundPos),
-            customFloor(self.y + self.texty + self.padding[2], self.roundPos), 0, self.fontScale)
-
-        lg.setColor(r,g,b,a)
-    end,
 }
 
 ---Create a new button, if any of the arguments are nil they are pulled from ButtonManager.default
@@ -156,15 +161,22 @@ function ButtonManager.new(label, x, y, width, height, toggle, color, pressedCol
     newButton.fontScale = ButtonManager.default.fontScale
 
     newButton.toggle = toggle or ButtonManager.default.toggle
-    newButton.value = false
+    if toggle then
+        newButton.value = false
+    end
 
     newButton.enabled = true
     newButton.interactable = true
 
+    newButton.update = ButtonManager.default.update
+    newButton.draw = ButtonManager.default.draw
+    newButton.onClick = ButtonManager.default.onClick
+    newButton.onRelease = ButtonManager.default.onRelease
+    newButton.onToggleOn = ButtonManager.default.onToggleOn
+    newButton.onToggleOff = ButtonManager.default.onToggleOn
+
     newButton:setLabel(newButton.label)
     newButton:setAlignment(ButtonManager.default.alignment)
-
-    newButton.draw = ButtonManager.default.draw
 
     table.insert(ButtonManager.Buttons, newButton)
 
