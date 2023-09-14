@@ -30,6 +30,8 @@ local Button = {
     end,
     onClick = function()
     end,
+    onToggleOn = function()
+    end,
     onToggleOff = function()
     end,
     onRelease = function()
@@ -193,7 +195,9 @@ function ButtonManager.mousepressed(x, y, button)
 
                         if v.value == true then
                             v:onClick()
+                            v:onToggleOn()
                         else
+                            v:onClick()
                             v:onToggleOff()
                         end
                     else

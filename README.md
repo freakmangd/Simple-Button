@@ -43,9 +43,11 @@ Button:setImage(image)
 -- button callbacks you can override
 Button:update(dt)
 Button:onClick()
+Button:onRelease()
+
+-- button callbacks for toggle buttons
 Button:onToggleOn()
 Button:onToggleOff()
-Button:onRelease()
 ```
 
 More functions can be found in the simplebutton.lua script
