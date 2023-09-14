@@ -22,10 +22,10 @@ function love.load()
     end
 
     local movingButton = bman.new("Catch me!", 0, 0, 100, 40)
-    movingButton.speed = 3
+    movingButton.speed = 200
 
-    movingButton.update = function(self)
-        self.x = self.x + self.speed
+    movingButton.update = function(self, dt)
+        self.x = self.x + self.speed * dt
     end
 
     movingButton.onClick = function(self)
