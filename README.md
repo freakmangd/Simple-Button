@@ -42,10 +42,11 @@ Button:setImage(image)
 
 -- button callbacks you can override
 Button:update(dt)
+Button:draw()
 Button:onClick()
 Button:onRelease()
 
--- button callbacks for toggle buttons
+-- button callbacks you can override for toggle buttons
 Button:onToggleOn()
 Button:onToggleOff()
 ```
