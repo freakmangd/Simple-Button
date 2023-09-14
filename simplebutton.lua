@@ -61,6 +61,7 @@ end
 ---@field color Color
 ---@field pressedColor Color
 ---@field toggledColor Color
+---@field disabledColor Color
 ---@field font any
 ---@field alignment Alignment
 ---@field padding {x: number, y: number}
@@ -77,8 +78,10 @@ ButtonManager.default = {
     toggle = false,
     fillType = 'fill',
     color = { 1, 1, 1, 1 },
+    textColor = { 0, 0, 0, 1 },
     pressedColor = { 0.8, 0.8, 0.8, 1 },
     toggledColor = { 0.9, 0.9, 0.9, 1 },
+    disabledColor = { 0.5, 0.5, 0.5, 0.8 },
     font = lg.getFont(),
     alignment = 'left',
     padding = { 0, 0 },
@@ -86,10 +89,12 @@ ButtonManager.default = {
     img = nil,
     draw = function(self)
         if not self.interactable then
-            self.currentColor = self.disaselfledColor
+            self.currentColor = self.disabledColor
         end
 
-        lg.setColor(self.currentColor[1], self.currentColor[2], self.currentColor[3], self.currentColor[4] or 1)
+        local r,g,b,a = lg.getColor()
+
+        lg.setColor(self.currentColor)
 
         if self.img ~= nil then
             lg.draw(self.img, self.x, self.y, 0, self.scale[1], self.scale[2])
@@ -97,10 +102,12 @@ ButtonManager.default = {
             lg.rectangle(self.fillType, self.x, self.y, self.width, self.height)
         end
 
-        lg.setColor(0, 0, 0)
+        lg.setColor(self.textColor);
 
         lg.draw(self.text, customFloor(self.x + self.textx + self.padding[1], self.roundPos),
             customFloor(self.y + self.texty + self.padding[2], self.roundPos), 0, self.fontScale)
+
+        lg.setColor(r,g,b,a)
     end,
 }
 
@@ -136,9 +143,10 @@ function ButtonManager.new(label, x, y, width, height, toggle, color, pressedCol
 
     newButton.fillType = ButtonManager.default.fillType
     newButton.color = color or ButtonManager.default.color
+    newButton.textColor = ButtonManager.default.textColor
     newButton.pressedColor = pressedColor or ButtonManager.default.pressedColor
     newButton.toggledColor = toggledColor or ButtonManager.default.toggledColor
-    newButton.disabledColor = { 0.2, 0.2, 0.2 }
+    newButton.disabledColor = ButtonManager.default.disabledColor
     newButton.currentColor = newButton.color
 
     newButton.roundPos = ButtonManager.default.roundPos
