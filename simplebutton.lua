@@ -193,11 +193,13 @@ function ButtonManager.update(dt)
     end
 end
 
----Invokes the mousepressed event for all buttons
+---Invokes the mousepressed event for all buttons. Returnes true if any button was clicked.
 ---@param x number
 ---@param y number
 ---@param button number
+---@return anyClicked bool
 function ButtonManager.mousepressed(x, y, button)
+    local anyClicked = false
     if button == 1 then
         for _, v in ipairs(ButtonManager.Buttons) do
             if v.enabled and v.interactable then
@@ -217,17 +219,21 @@ function ButtonManager.mousepressed(x, y, button)
                     end
 
                     v.currentColor = v.pressedColor
+                    anyClicked = true
                 end
             end
         end
     end
+    return anyClicked
 end
 
----Invokes the mousereleased event for all buttons
+---Invokes the mousereleased event for all buttons. Return true if any button was changed.
 ---@param x number
 ---@param y number
 ---@param button number
+---@return anyChanged bool
 function ButtonManager.mousereleased(x, y, button)
+    local anyChanged = false
     if button == 1 then
         for _, v in ipairs(ButtonManager.Buttons) do
             if v.enabled then
@@ -242,9 +248,11 @@ function ButtonManager.mousereleased(x, y, button)
                 else
                     v.currentColor = v.color
                 end
+                anyChanged = true
             end
         end
     end
+    return anyChanged
 end
 
 ---Invokes the draw event for all or one button
